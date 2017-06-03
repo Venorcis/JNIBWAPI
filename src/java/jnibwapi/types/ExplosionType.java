@@ -7,13 +7,13 @@ import java.util.Map;
 
 /**
  * Represents a StarCraft explosion type.
- * 
- * For a description of fields see: http://code.google.com/p/bwapi/wiki/ExplosionType
+ *
+ * For a description of fields see:
+ * http://code.google.com/p/bwapi/wiki/ExplosionType
  */
 public class ExplosionType {
-	
 	private static Map<Integer, ExplosionType> idToExplosionType = new HashMap<>();
-	
+
 	public static class ExplosionTypes {
 		public static final ExplosionType None = new ExplosionType(0);
 		public static final ExplosionType Normal = new ExplosionType(1);
@@ -41,43 +41,43 @@ public class ExplosionType {
 		public static final ExplosionType Undefined23 = new ExplosionType(23);
 		public static final ExplosionType Air_Splash = new ExplosionType(24);
 		public static final ExplosionType Unknown = new ExplosionType(25);
-		
+
 		public static ExplosionType getExplosionType(int id) {
-			return idToExplosionType.get(id);
+			ExplosionType type = idToExplosionType.get(id);
+			return (type == null) ? Unknown : type;
 		}
-		
+
 		public static Collection<ExplosionType> getAllExplosionTypes() {
 			return Collections.unmodifiableCollection(idToExplosionType.values());
 		}
 	}
-	
+
 	public static final int numAttributes = 1;
-	
+	private final int ID;
 	private String name;
-	private int ID;
-	
+
 	private ExplosionType(int ID) {
 		this.ID = ID;
 		idToExplosionType.put(ID, this);
 	}
-	
+
 	public void initialize(int[] data, int index, String name) {
-		if (ID != data[index++])
+		if (this.ID != data[index++]) {
 			throw new IllegalArgumentException();
+		}
 		this.name = name;
 	}
-	
+
 	public String getName() {
-		return name;
+		return this.name;
 	}
-	
+
 	public int getID() {
-		return ID;
+		return this.ID;
 	}
-	
+
 	@Override
 	public String toString() {
 		return getName() + " (" + getID() + ")";
 	}
-	
 }

@@ -10,13 +10,12 @@ import jnibwapi.types.WeaponType.WeaponTypes;
 
 /**
  * Represents a StarCraft unit type.
- * 
+ *
  * For a description of fields see: http://code.google.com/p/bwapi/wiki/UnitType
  */
 public class UnitType {
-	
 	private static Map<Integer, UnitType> idToUnitType = new HashMap<>();
-	
+
 	public static class UnitTypes {
 		public static final UnitType Terran_Marine = new UnitType(0);
 		public static final UnitType Terran_Ghost = new UnitType(1);
@@ -252,20 +251,20 @@ public class UnitType {
 		// 231 Buildings (BWAPI4)
 		// 232 Factories (BWAPI4)
 		public static final UnitType Unknown = new UnitType(233);
-		
+
 		public static UnitType getUnitType(int id) {
-			return idToUnitType.get(id);
+			UnitType type = idToUnitType.get(id);
+			return (type == null) ? Unknown : type;
 		}
-		
+
 		public static Collection<UnitType> getAllUnitTypes() {
 			return Collections.unmodifiableCollection(idToUnitType.values());
 		}
 	}
-	
+
 	public static final int numAttributes = 57;
 	public static final double fixedScale = 100.0;
-	
-	private int ID;
+	private final int ID;
 	private int raceID;
 	private int whatBuildID;
 	private int requiredTechID;
@@ -322,337 +321,326 @@ public class UnitType {
 	private boolean addon;
 	private boolean flyingBuilding;
 	private boolean spell;
-	
 	private String name;
-	private Map<Integer, Integer> requiredUnits = new HashMap<>();
-	
+	private final Map<Integer, Integer> requiredUnits = new HashMap<>();
+
 	private UnitType(int ID) {
 		this.ID = ID;
 		idToUnitType.put(ID, this);
 	}
-	
+
 	public void initialize(int[] data, int index, String name, int[] requiredUnits) {
-		if (ID != data[index++])
+		if (this.ID != data[index++]) {
 			throw new IllegalArgumentException();
-		raceID = data[index++];
-		whatBuildID = data[index++];
-		requiredTechID = data[index++];
-		armorUpgradeID = data[index++];
-		maxHitPoints = data[index++];
-		maxShields = data[index++];
-		maxEnergy = data[index++];
-		armor = data[index++];
-		mineralPrice = data[index++];
-		gasPrice = data[index++];
-		buildTime = data[index++];
-		supplyRequired = data[index++];
-		supplyProvided = data[index++];
-		spaceRequired = data[index++];
-		spaceProvided = data[index++];
-		buildScore = data[index++];
-		destroyScore = data[index++];
-		sizeID = data[index++];
-		tileWidth = data[index++];
-		tileHeight = data[index++];
-		dimensionLeft = data[index++];
-		dimensionUp = data[index++];
-		dimensionRight = data[index++];
-		dimensionDown = data[index++];
-		seekRange = data[index++];
-		sightRange = data[index++];
-		groundWeaponID = data[index++];
-		maxGroundHits = data[index++];
-		airWeaponID = data[index++];
-		maxAirHits = data[index++];
-		topSpeed = data[index++] / fixedScale;
-		acceleration = data[index++];
-		haltDistance = data[index++];
-		turnRadius = data[index++];
-		produceCapable = data[index++] == 1;
-		attackCapable = data[index++] == 1;
-		canMove = data[index++] == 1;
-		flyer = data[index++] == 1;
-		regenerates = data[index++] == 1;
-		spellcaster = data[index++] == 1;
-		invincible = data[index++] == 1;
-		organic = data[index++] == 1;
-		mechanical = data[index++] == 1;
-		robotic = data[index++] == 1;
-		detector = data[index++] == 1;
-		resourceContainer = data[index++] == 1;
-		refinery = data[index++] == 1;
-		worker = data[index++] == 1;
-		requiresPsi = data[index++] == 1;
-		requiresCreep = data[index++] == 1;
-		burrowable = data[index++] == 1;
-		cloakable = data[index++] == 1;
-		building = data[index++] == 1;
-		addon = data[index++] == 1;
-		flyingBuilding = data[index++] == 1;
-		spell = data[index++] == 1;
-		
+		}
+		this.raceID = data[index++];
+		this.whatBuildID = data[index++];
+		this.requiredTechID = data[index++];
+		this.armorUpgradeID = data[index++];
+		this.maxHitPoints = data[index++];
+		this.maxShields = data[index++];
+		this.maxEnergy = data[index++];
+		this.armor = data[index++];
+		this.mineralPrice = data[index++];
+		this.gasPrice = data[index++];
+		this.buildTime = data[index++];
+		this.supplyRequired = data[index++];
+		this.supplyProvided = data[index++];
+		this.spaceRequired = data[index++];
+		this.spaceProvided = data[index++];
+		this.buildScore = data[index++];
+		this.destroyScore = data[index++];
+		this.sizeID = data[index++];
+		this.tileWidth = data[index++];
+		this.tileHeight = data[index++];
+		this.dimensionLeft = data[index++];
+		this.dimensionUp = data[index++];
+		this.dimensionRight = data[index++];
+		this.dimensionDown = data[index++];
+		this.seekRange = data[index++];
+		this.sightRange = data[index++];
+		this.groundWeaponID = data[index++];
+		this.maxGroundHits = data[index++];
+		this.airWeaponID = data[index++];
+		this.maxAirHits = data[index++];
+		this.topSpeed = (data[index++] / fixedScale);
+		this.acceleration = data[index++];
+		this.haltDistance = data[index++];
+		this.turnRadius = data[index++];
+		this.produceCapable = (data[index++] == 1);
+		this.attackCapable = (data[index++] == 1);
+		this.canMove = (data[index++] == 1);
+		this.flyer = (data[index++] == 1);
+		this.regenerates = (data[index++] == 1);
+		this.spellcaster = (data[index++] == 1);
+		this.invincible = (data[index++] == 1);
+		this.organic = (data[index++] == 1);
+		this.mechanical = (data[index++] == 1);
+		this.robotic = (data[index++] == 1);
+		this.detector = (data[index++] == 1);
+		this.resourceContainer = (data[index++] == 1);
+		this.refinery = (data[index++] == 1);
+		this.worker = (data[index++] == 1);
+		this.requiresPsi = (data[index++] == 1);
+		this.requiresCreep = (data[index++] == 1);
+		this.burrowable = (data[index++] == 1);
+		this.cloakable = (data[index++] == 1);
+		this.building = (data[index++] == 1);
+		this.addon = (data[index++] == 1);
+		this.flyingBuilding = (data[index++] == 1);
+		this.spell = (data[index++] == 1);
 		this.name = name;
 		for (int i = 0; i < requiredUnits.length; i += 2) {
 			this.requiredUnits.put(requiredUnits[i], requiredUnits[i + 1]);
 		}
 	}
-	
+
 	public int getID() {
-		return ID;
+		return this.ID;
 	}
-	
+
 	public int getRaceID() {
-		return raceID;
+		return this.raceID;
 	}
-	
+
 	public int getWhatBuildID() {
-		return whatBuildID;
+		return this.whatBuildID;
 	}
-	
+
 	public int getRequiredTechID() {
-		return requiredTechID;
+		return this.requiredTechID;
 	}
-	
+
 	public int getArmorUpgradeID() {
-		return armorUpgradeID;
+		return this.armorUpgradeID;
 	}
-	
+
 	public int getMaxHitPoints() {
-		return maxHitPoints;
+		return this.maxHitPoints;
 	}
-	
+
 	public int getMaxShields() {
-		return maxShields;
+		return this.maxShields;
 	}
-	
+
 	public int getMaxEnergy() {
-		return maxEnergy;
+		return this.maxEnergy;
 	}
-	
+
 	public int getArmor() {
-		return armor;
+		return this.armor;
 	}
-	
+
 	public int getMineralPrice() {
-		return mineralPrice;
+		return this.mineralPrice;
 	}
-	
+
 	public int getGasPrice() {
-		return gasPrice;
+		return this.gasPrice;
 	}
-	
+
 	public int getBuildTime() {
-		return buildTime;
+		return this.buildTime;
 	}
-	
+
 	public int getSupplyRequired() {
-		return supplyRequired;
+		return this.supplyRequired;
 	}
-	
+
 	public int getSupplyProvided() {
-		return supplyProvided;
+		return this.supplyProvided;
 	}
-	
+
 	public int getSpaceRequired() {
-		return spaceRequired;
+		return this.spaceRequired;
 	}
-	
+
 	public int getSpaceProvided() {
-		return spaceProvided;
+		return this.spaceProvided;
 	}
-	
+
 	public int getBuildScore() {
-		return buildScore;
+		return this.buildScore;
 	}
-	
+
 	public int getDestroyScore() {
-		return destroyScore;
+		return this.destroyScore;
 	}
-	
+
 	public UnitSizeType getSize() {
-		return UnitSizeTypes.getUnitSizeType(sizeID);
+		return UnitSizeTypes.getUnitSizeType(this.sizeID);
 	}
-	
-	@Deprecated
-	public int getSizeID() {
-		return sizeID;
-	}
-	
+
 	public int getTileWidth() {
-		return tileWidth;
+		return this.tileWidth;
 	}
-	
+
 	public int getTileHeight() {
-		return tileHeight;
+		return this.tileHeight;
 	}
-	
+
 	public int getDimensionLeft() {
-		return dimensionLeft;
+		return this.dimensionLeft;
 	}
-	
+
 	public int getDimensionUp() {
-		return dimensionUp;
+		return this.dimensionUp;
 	}
-	
+
 	public int getDimensionRight() {
-		return dimensionRight;
+		return this.dimensionRight;
 	}
-	
+
 	public int getDimensionDown() {
-		return dimensionDown;
+		return this.dimensionDown;
 	}
-	
+
 	public int getSeekRange() {
-		return seekRange;
+		return this.seekRange;
 	}
-	
+
 	public int getSightRange() {
-		return sightRange;
+		return this.sightRange;
 	}
-	
+
 	public WeaponType getGroundWeapon() {
-		return WeaponTypes.getWeaponType(groundWeaponID);
+		return WeaponTypes.getWeaponType(this.groundWeaponID);
 	}
-	
-	@Deprecated
-	public int getGroundWeaponID() {
-		return groundWeaponID;
-	}
-	
+
 	public int getMaxGroundHits() {
-		return maxGroundHits;
+		return this.maxGroundHits;
 	}
-	
+
 	public int getAirWeaponID() {
-		return airWeaponID;
+		return this.airWeaponID;
 	}
-	
+
 	public int getMaxAirHits() {
-		return maxAirHits;
+		return this.maxAirHits;
 	}
-	
+
 	public double getTopSpeed() {
-		return topSpeed;
+		return this.topSpeed;
 	}
-	
+
 	public int getAcceleration() {
-		return acceleration;
+		return this.acceleration;
 	}
-	
+
 	public int getHaltDistance() {
-		return haltDistance;
+		return this.haltDistance;
 	}
-	
+
 	public int getTurnRadius() {
-		return turnRadius;
+		return this.turnRadius;
 	}
-	
+
 	public boolean isProduceCapable() {
-		return produceCapable;
+		return this.produceCapable;
 	}
-	
+
 	public boolean isAttackCapable() {
-		return attackCapable;
+		return this.attackCapable;
 	}
-	
+
 	public boolean isCanMove() {
-		return canMove;
+		return this.canMove;
 	}
-	
+
 	public boolean isFlyer() {
-		return flyer;
+		return this.flyer;
 	}
-	
+
 	public boolean isRegenerates() {
-		return regenerates;
+		return this.regenerates;
 	}
-	
+
 	public boolean isSpellcaster() {
-		return spellcaster;
+		return this.spellcaster;
 	}
-	
+
 	public boolean isInvincible() {
-		return invincible;
+		return this.invincible;
 	}
-	
+
 	public boolean isOrganic() {
-		return organic;
+		return this.organic;
 	}
-	
+
 	public boolean isMechanical() {
-		return mechanical;
+		return this.mechanical;
 	}
-	
+
 	public boolean isRobotic() {
-		return robotic;
+		return this.robotic;
 	}
-	
+
 	public boolean isDetector() {
-		return detector;
+		return this.detector;
 	}
-	
+
 	public boolean isResourceContainer() {
-		return resourceContainer;
+		return this.resourceContainer;
 	}
-	
+
 	public boolean isRefinery() {
-		return refinery;
+		return this.refinery;
 	}
-	
+
 	public boolean isWorker() {
-		return worker;
+		return this.worker;
 	}
-	
+
 	public boolean isRequiresPsi() {
-		return requiresPsi;
+		return this.requiresPsi;
 	}
-	
+
 	public boolean isRequiresCreep() {
-		return requiresCreep;
+		return this.requiresCreep;
 	}
-	
+
 	public boolean isBurrowable() {
-		return burrowable;
+		return this.burrowable;
 	}
-	
+
 	public boolean isCloakable() {
-		return cloakable;
+		return this.cloakable;
 	}
-	
+
 	public boolean isBuilding() {
-		return building;
+		return this.building;
 	}
-	
+
 	public boolean isAddon() {
-		return addon;
+		return this.addon;
 	}
-	
+
 	public boolean isFlyingBuilding() {
-		return flyingBuilding;
+		return this.flyingBuilding;
 	}
-	
+
 	public boolean isSpell() {
-		return spell;
+		return this.spell;
 	}
-	
+
 	public String getName() {
-		return name;
+		return this.name;
 	}
-	
-	/** A map from UnitTypeID to quantity required (usually 1, but 2 for Archons) */
+
+	/**
+	 * A map from UnitTypeID to quantity required (usually 1, but 2 for Archons)
+	 */
 	public Map<Integer, Integer> getRequiredUnits() {
-		return Collections.unmodifiableMap(requiredUnits);
+		return Collections.unmodifiableMap(this.requiredUnits);
 	}
-	
+
 	public boolean isMineralField() {
-		return this == UnitTypes.Resource_Mineral_Field
-				|| this == UnitTypes.Resource_Mineral_Field_Type_2
+		return this == UnitTypes.Resource_Mineral_Field || this == UnitTypes.Resource_Mineral_Field_Type_2
 				|| this == UnitTypes.Resource_Mineral_Field_Type_3;
 	}
-	
+
 	@Override
 	public String toString() {
 		return getName() + " (" + getID() + ")";
 	}
-	
 }

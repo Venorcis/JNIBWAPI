@@ -7,13 +7,13 @@ import java.util.Map;
 
 /**
  * Represents a StarCraft weapon type.
- * 
- * For a description of fields see: http://code.google.com/p/bwapi/wiki/WeaponType
+ *
+ * For a description of fields see:
+ * http://code.google.com/p/bwapi/wiki/WeaponType
  */
 public class WeaponType {
-	
 	private static Map<Integer, WeaponType> idToWeaponType = new HashMap<>();
-	
+
 	public static class WeaponTypes {
 		public static final WeaponType Gauss_Rifle = new WeaponType(0);
 		public static final WeaponType Gauss_Rifle_Jim_Raynor = new WeaponType(1);
@@ -84,8 +84,7 @@ public class WeaponType {
 		// 68 is undefined
 		public static final WeaponType Psi_Assault = new WeaponType(69);
 		public static final WeaponType Psionic_Shockwave = new WeaponType(70);
-		public static final WeaponType Psionic_Shockwave_Tassadar_Zeratul_Archon =
-				new WeaponType(71);
+		public static final WeaponType Psionic_Shockwave_Tassadar_Zeratul_Archon = new WeaponType(71);
 		// 72 is undefined
 		public static final WeaponType Dual_Photon_Blasters = new WeaponType(73);
 		public static final WeaponType Anti_Matter_Missiles = new WeaponType(74);
@@ -102,12 +101,12 @@ public class WeaponType {
 		public static final WeaponType Warp_Blades_Zeratul = new WeaponType(85);
 		public static final WeaponType Warp_Blades_Hero = new WeaponType(86);
 		// 87-92 are undefined
-	    public static final WeaponType Independant_Laser_Battery = new WeaponType(93);
-	    // 94-95 are undefined
-	    public static final WeaponType Twin_Autocannons_Floor_Trap = new WeaponType(96);
-	    public static final WeaponType Hellfire_Missile_Pack_Wall_Trap = new WeaponType(97);
-	    public static final WeaponType Flame_Thrower_Wall_Trap = new WeaponType(98);
-	    public static final WeaponType Hellfire_Missile_Pack_Floor_Trap = new WeaponType(99);
+		public static final WeaponType Independant_Laser_Battery = new WeaponType(93);
+		// 94-95 are undefined
+		public static final WeaponType Twin_Autocannons_Floor_Trap = new WeaponType(96);
+		public static final WeaponType Hellfire_Missile_Pack_Wall_Trap = new WeaponType(97);
+		public static final WeaponType Flame_Thrower_Wall_Trap = new WeaponType(98);
+		public static final WeaponType Hellfire_Missile_Pack_Floor_Trap = new WeaponType(99);
 		public static final WeaponType Neutron_Flare = new WeaponType(100);
 		public static final WeaponType Disruption_Web = new WeaponType(101);
 		public static final WeaponType Restoration = new WeaponType(102);
@@ -128,20 +127,20 @@ public class WeaponType {
 		// 117-129 are undefined
 		public static final WeaponType None = new WeaponType(130);
 		public static final WeaponType Unknown = new WeaponType(131);
-		
+
 		public static WeaponType getWeaponType(int id) {
-			return idToWeaponType.get(id);
+			WeaponType type = idToWeaponType.get(id);
+			return (type == null) ? Unknown : type;
 		}
-		
+
 		public static Collection<WeaponType> getAllWeaponTypes() {
 			return Collections.unmodifiableCollection(idToWeaponType.values());
 		}
 	}
-	
+
 	public static final int numAttributes = 24;
-	
+	private final int ID;
 	private String name;
-	private int ID;
 	private int techID;
 	private int whatUsesTypeID;
 	private int damageAmount;
@@ -165,142 +164,142 @@ public class WeaponType {
 	private boolean targetsTerrain;
 	private boolean targetsOrgOrMech;
 	private boolean targetsOwn;
-	
+
 	private WeaponType(int ID) {
 		this.ID = ID;
 		idToWeaponType.put(ID, this);
 	}
-	
+
 	public void initialize(int[] data, int index, String name) {
-		if (ID != data[index++])
+		if (this.ID != data[index++]) {
 			throw new IllegalArgumentException();
-		techID = data[index++];
-		whatUsesTypeID = data[index++];
-		damageAmount = data[index++];
-		damageBonus = data[index++];
-		damageCooldown = data[index++];
-		damageFactor = data[index++];
-		upgradeTypeID = data[index++];
-		damageTypeID = data[index++];
-		explosionType = data[index++];
-		minRange = data[index++];
-		maxRange = data[index++];
-		innerSplashRadius = data[index++];
-		medianSplashRadius = data[index++];
-		outerSplashRadius = data[index++];
-		targetsAir = data[index++] == 1;
-		targetsGround = data[index++] == 1;
-		targetsMechanical = data[index++] == 1;
-		targetsOrganic = data[index++] == 1;
-		targetsNonBuilding = data[index++] == 1;
-		targetsNonRobotic = data[index++] == 1;
-		targetsTerrain = data[index++] == 1;
-		targetsOrgOrMech = data[index++] == 1;
-		targetsOwn = data[index++] == 1;
-		
+		}
+		this.techID = data[index++];
+		this.whatUsesTypeID = data[index++];
+		this.damageAmount = data[index++];
+		this.damageBonus = data[index++];
+		this.damageCooldown = data[index++];
+		this.damageFactor = data[index++];
+		this.upgradeTypeID = data[index++];
+		this.damageTypeID = data[index++];
+		this.explosionType = data[index++];
+		this.minRange = data[index++];
+		this.maxRange = data[index++];
+		this.innerSplashRadius = data[index++];
+		this.medianSplashRadius = data[index++];
+		this.outerSplashRadius = data[index++];
+		this.targetsAir = (data[index++] == 1);
+		this.targetsGround = (data[index++] == 1);
+		this.targetsMechanical = (data[index++] == 1);
+		this.targetsOrganic = (data[index++] == 1);
+		this.targetsNonBuilding = (data[index++] == 1);
+		this.targetsNonRobotic = (data[index++] == 1);
+		this.targetsTerrain = (data[index++] == 1);
+		this.targetsOrgOrMech = (data[index++] == 1);
+		this.targetsOwn = (data[index++] == 1);
 		this.name = name;
 	}
-	
+
 	public String getName() {
-		return name;
+		return this.name;
 	}
-	
+
 	public int getID() {
-		return ID;
+		return this.ID;
 	}
-	
+
 	public int getTechID() {
-		return techID;
+		return this.techID;
 	}
-	
+
 	public int getWhatUsesTypeID() {
-		return whatUsesTypeID;
+		return this.whatUsesTypeID;
 	}
-	
+
 	public int getDamageAmount() {
-		return damageAmount;
+		return this.damageAmount;
 	}
-	
+
 	public int getDamageBonus() {
-		return damageBonus;
+		return this.damageBonus;
 	}
-	
+
 	public int getDamageCooldown() {
-		return damageCooldown;
+		return this.damageCooldown;
 	}
-	
+
 	public int getDamageFactor() {
-		return damageFactor;
+		return this.damageFactor;
 	}
-	
+
 	public int getUpgradeTypeID() {
-		return upgradeTypeID;
+		return this.upgradeTypeID;
 	}
-	
+
 	public int getDamageTypeID() {
-		return damageTypeID;
+		return this.damageTypeID;
 	}
-	
+
 	public int getExplosionType() {
-		return explosionType;
+		return this.explosionType;
 	}
-	
+
 	public int getMinRange() {
-		return minRange;
+		return this.minRange;
 	}
-	
+
 	public int getMaxRange() {
-		return maxRange;
+		return this.maxRange;
 	}
-	
+
 	public int getInnerSplashRadius() {
-		return innerSplashRadius;
+		return this.innerSplashRadius;
 	}
-	
+
 	public int getMedianSplashRadius() {
-		return medianSplashRadius;
+		return this.medianSplashRadius;
 	}
-	
+
 	public int getOuterSplashRadius() {
-		return outerSplashRadius;
+		return this.outerSplashRadius;
 	}
-	
+
 	public boolean isTargetsAir() {
-		return targetsAir;
+		return this.targetsAir;
 	}
-	
+
 	public boolean isTargetsGround() {
-		return targetsGround;
+		return this.targetsGround;
 	}
-	
+
 	public boolean isTargetsMechanical() {
-		return targetsMechanical;
+		return this.targetsMechanical;
 	}
-	
+
 	public boolean isTargetsOrganic() {
-		return targetsOrganic;
+		return this.targetsOrganic;
 	}
-	
+
 	public boolean isTargetsNonBuilding() {
-		return targetsNonBuilding;
+		return this.targetsNonBuilding;
 	}
-	
+
 	public boolean isTargetsNonRobotic() {
-		return targetsNonRobotic;
+		return this.targetsNonRobotic;
 	}
-	
+
 	public boolean isTargetsTerrain() {
-		return targetsTerrain;
+		return this.targetsTerrain;
 	}
-	
+
 	public boolean isTargetsOrgOrMech() {
-		return targetsOrgOrMech;
+		return this.targetsOrgOrMech;
 	}
-	
+
 	public boolean isTargetsOwn() {
-		return targetsOwn;
+		return this.targetsOwn;
 	}
-	
+
 	@Override
 	public String toString() {
 		return getName() + " (" + getID() + ")";

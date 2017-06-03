@@ -9,13 +9,12 @@ import jnibwapi.types.UnitType.UnitTypes;
 
 /**
  * Represents a StarCraft tech (research) type.
- * 
+ *
  * For a description of fields see: http://code.google.com/p/bwapi/wiki/TechType
  */
 public class TechType {
-	
 	private static Map<Integer, TechType> idToTechType = new HashMap<>();
-	
+
 	public static class TechTypes {
 		public static final TechType Stim_Packs = new TechType(0);
 		public static final TechType Lockdown = new TechType(1);
@@ -56,20 +55,20 @@ public class TechType {
 		public static final TechType None = new TechType(44);
 		public static final TechType Unknown = new TechType(45);
 		public static final TechType Nuclear_Strike = new TechType(46);
-		
+
 		public static TechType getTechType(int id) {
-			return idToTechType.get(id);
+			TechType type = idToTechType.get(id);
+			return (type == null) ? Unknown : type;
 		}
-		
+
 		public static Collection<TechType> getAllTechTypes() {
 			return Collections.unmodifiableCollection(idToTechType.values());
 		}
 	}
-	
+
 	public static final int numAttributes = 10;
-	
+	private final int ID;
 	private String name;
-	private int ID;
 	private int raceID;
 	private int mineralPrice;
 	private int gasPrice;
@@ -79,80 +78,75 @@ public class TechType {
 	private int getWeaponID;
 	private boolean targetsUnits;
 	private boolean targetsPosition;
-	
+
 	private TechType(int ID) {
 		this.ID = ID;
 		idToTechType.put(ID, this);
 	}
-	
+
 	public void initialize(int[] data, int index, String name) {
-		if (ID != data[index++])
+		if (this.ID != data[index++]) {
 			throw new IllegalArgumentException();
-		raceID = data[index++];
-		mineralPrice = data[index++];
-		gasPrice = data[index++];
-		researchTime = data[index++];
-		energyUsed = data[index++];
-		whatResearchesTypeID = data[index++];
-		getWeaponID = data[index++];
-		targetsUnits = data[index++] == 1;
-		targetsPosition = data[index++] == 1;
-		
+		}
+		this.raceID = data[index++];
+		this.mineralPrice = data[index++];
+		this.gasPrice = data[index++];
+		this.researchTime = data[index++];
+		this.energyUsed = data[index++];
+		this.whatResearchesTypeID = data[index++];
+		this.getWeaponID = data[index++];
+		this.targetsUnits = (data[index++] == 1);
+		this.targetsPosition = (data[index++] == 1);
+
 		this.name = name;
 	}
-	
+
 	public String getName() {
-		return name;
+		return this.name;
 	}
-	
+
 	public int getID() {
-		return ID;
+		return this.ID;
 	}
-	
+
 	public int getRaceID() {
-		return raceID;
+		return this.raceID;
 	}
-	
+
 	public int getMineralPrice() {
-		return mineralPrice;
+		return this.mineralPrice;
 	}
-	
+
 	public int getGasPrice() {
-		return gasPrice;
+		return this.gasPrice;
 	}
-	
+
 	public int getResearchTime() {
-		return researchTime;
+		return this.researchTime;
 	}
-	
+
 	public int getEnergyUsed() {
-		return energyUsed;
+		return this.energyUsed;
 	}
-	
-	@Deprecated
-	public int getWhatResearchesTypeID() {
-		return whatResearchesTypeID;
-	}
-	
+
 	public UnitType getWhatResearches() {
-		return UnitTypes.getUnitType(whatResearchesTypeID);
+		return UnitTypes.getUnitType(this.whatResearchesTypeID);
 	}
-	
+
 	public int getGetWeaponID() {
-		return getWeaponID;
+		return this.getWeaponID;
 	}
-	
+
 	public boolean isTargetsUnits() {
-		return targetsUnits;
+		return this.targetsUnits;
 	}
-	
+
 	public boolean isTargetsPosition() {
-		return targetsPosition;
+		return this.targetsPosition;
 	}
-	
+
 	@Override
 	public String toString() {
 		return getName() + " (" + getID() + ")";
 	}
-	
 }

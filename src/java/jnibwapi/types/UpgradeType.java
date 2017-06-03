@@ -7,12 +7,13 @@ import java.util.Map;
 
 /**
  * Represents a StarCraft upgrade type.
- * 
- * For a description of fields see: http://code.google.com/p/bwapi/wiki/UpgradeType
+ *
+ * For a description of fields see:
+ * http://code.google.com/p/bwapi/wiki/UpgradeType
  */
 public class UpgradeType {
 	private static Map<Integer, UpgradeType> idToUpgradeType = new HashMap<>();
-	
+
 	public static class UpgradeTypes {
 		public static final UpgradeType Terran_Infantry_Armor = new UpgradeType(0);
 		public static final UpgradeType Terran_Vehicle_Plating = new UpgradeType(1);
@@ -103,20 +104,20 @@ public class UpgradeType {
 		// Undefined55-60
 		public static final UpgradeType None = new UpgradeType(61);
 		public static final UpgradeType Unknown = new UpgradeType(62);
-		
+
 		public static UpgradeType getUpgradeType(int id) {
-			return idToUpgradeType.get(id);
+			UpgradeType type = idToUpgradeType.get(id);
+			return (type == null) ? Unknown : type;
 		}
-		
+
 		public static Collection<UpgradeType> getAllUpgradeTypes() {
 			return Collections.unmodifiableCollection(idToUpgradeType.values());
 		}
 	}
-	
+
 	public static final int numAttributes = 10;
-	
+	private final int ID;
 	private String name;
-	private int ID;
 	private int raceID;
 	private int mineralPriceBase;
 	private int mineralPriceFactor;
@@ -126,75 +127,74 @@ public class UpgradeType {
 	private int upgradeTimeFactor;
 	private int maxRepeats;
 	private int whatUpgradesTypeID;
-	
+
 	private UpgradeType(int ID) {
 		this.ID = ID;
 		idToUpgradeType.put(ID, this);
 	}
-	
+
 	public void initialize(int[] data, int index, String name) {
-		if (ID != data[index++])
+		if (this.ID != data[index++]) {
 			throw new IllegalArgumentException();
-		raceID = data[index++];
-		mineralPriceBase = data[index++];
-		mineralPriceFactor = data[index++];
-		gasPriceBase = data[index++];
-		gasPriceFactor = data[index++];
-		upgradeTimeBase = data[index++];
-		upgradeTimeFactor = data[index++];
-		maxRepeats = data[index++];
-		whatUpgradesTypeID = data[index++];
-		
+		}
+		this.raceID = data[index++];
+		this.mineralPriceBase = data[index++];
+		this.mineralPriceFactor = data[index++];
+		this.gasPriceBase = data[index++];
+		this.gasPriceFactor = data[index++];
+		this.upgradeTimeBase = data[index++];
+		this.upgradeTimeFactor = data[index++];
+		this.maxRepeats = data[index++];
+		this.whatUpgradesTypeID = data[index++];
 		this.name = name;
 	}
-	
+
 	public String getName() {
-		return name;
+		return this.name;
 	}
-	
+
 	public int getID() {
-		return ID;
+		return this.ID;
 	}
-	
+
 	public int getRaceID() {
-		return raceID;
+		return this.raceID;
 	}
-	
+
 	public int getMineralPriceBase() {
-		return mineralPriceBase;
+		return this.mineralPriceBase;
 	}
-	
+
 	public int getMineralPriceFactor() {
-		return mineralPriceFactor;
+		return this.mineralPriceFactor;
 	}
-	
+
 	public int getGasPriceBase() {
-		return gasPriceBase;
+		return this.gasPriceBase;
 	}
-	
+
 	public int getGasPriceFactor() {
-		return gasPriceFactor;
+		return this.gasPriceFactor;
 	}
-	
+
 	public int getUpgradeTimeBase() {
-		return upgradeTimeBase;
+		return this.upgradeTimeBase;
 	}
-	
+
 	public int getUpgradeTimeFactor() {
-		return upgradeTimeFactor;
+		return this.upgradeTimeFactor;
 	}
-	
+
 	public int getMaxRepeats() {
-		return maxRepeats;
+		return this.maxRepeats;
 	}
-	
+
 	public int getWhatUpgradesTypeID() {
-		return whatUpgradesTypeID;
+		return this.whatUpgradesTypeID;
 	}
-	
+
 	@Override
 	public String toString() {
 		return getName() + " (" + getID() + ")";
 	}
-	
 }

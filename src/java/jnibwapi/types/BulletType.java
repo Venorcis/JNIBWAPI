@@ -7,13 +7,13 @@ import java.util.Map;
 
 /**
  * Represents a StarCraft bullet type.
- * 
- * For a description of fields see: http://code.google.com/p/bwapi/wiki/BulletType
+ *
+ * For a description of fields see:
+ * http://code.google.com/p/bwapi/wiki/BulletType
  */
 public class BulletType {
-	
 	private static Map<Integer, BulletType> idToBulletType = new HashMap<>();
-	
+
 	public static class BulletTypes {
 		public static final BulletType Melee = new BulletType(0);
 		public static final BulletType Fusion_Cutter_Hit = new BulletType(141);
@@ -52,43 +52,43 @@ public class BulletType {
 		public static final BulletType Neutron_Flare = new BulletType(206);
 		public static final BulletType None = new BulletType(209);
 		public static final BulletType Unknown = new BulletType(210);
-		
+
 		public static BulletType getBulletType(int id) {
-			return idToBulletType.get(id);
+			BulletType type = idToBulletType.get(id);
+			return (type == null) ? Unknown : type;
 		}
-		
+
 		public static Collection<BulletType> getAllBulletTypes() {
 			return Collections.unmodifiableCollection(idToBulletType.values());
 		}
 	}
-	
+
 	public static final int numAttributes = 1;
-	
+	private final int ID;
 	private String name;
-	private int ID;
-	
+
 	private BulletType(int ID) {
 		this.ID = ID;
 		idToBulletType.put(ID, this);
 	}
-	
+
 	public void initialize(int[] data, int index, String name) {
-		if (ID != data[index++])
+		if (this.ID != data[index++]) {
 			throw new IllegalArgumentException();
+		}
 		this.name = name;
 	}
-	
+
 	public String getName() {
-		return name;
+		return this.name;
 	}
-	
+
 	public int getID() {
-		return ID;
+		return this.ID;
 	}
-	
+
 	@Override
 	public String toString() {
 		return getName() + " (" + getID() + ")";
 	}
-	
 }

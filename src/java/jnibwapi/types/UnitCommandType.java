@@ -7,13 +7,13 @@ import java.util.Map;
 
 /**
  * Represents a StarCraft unit command type.
- * 
- * For a description of fields see: http://code.google.com/p/bwapi/wiki/UnitCommandType
+ *
+ * For a description of fields see:
+ * http://code.google.com/p/bwapi/wiki/UnitCommandType
  */
 public class UnitCommandType {
-	
 	private static Map<Integer, UnitCommandType> idToUnitCommandType = new HashMap<>();
-	
+
 	public static class UnitCommandTypes {
 		public static final UnitCommandType Attack_Move = new UnitCommandType(0);
 		public static final UnitCommandType Attack_Unit = new UnitCommandType(1);
@@ -61,43 +61,43 @@ public class UnitCommandType {
 		public static final UnitCommandType Place_COP = new UnitCommandType(43);
 		public static final UnitCommandType None = new UnitCommandType(44);
 		public static final UnitCommandType Unknown = new UnitCommandType(45);
-		
+
 		public static UnitCommandType getUnitCommandType(int id) {
-			return idToUnitCommandType.get(id);
+			UnitCommandType type = idToUnitCommandType.get(id);
+			return (type == null) ? Unknown : type;
 		}
-		
+
 		public static Collection<UnitCommandType> getAllUnitCommandTypes() {
 			return Collections.unmodifiableCollection(idToUnitCommandType.values());
 		}
 	}
-	
+
 	public static final int numAttributes = 1;
-	
+	private final int ID;
 	private String name;
-	private int ID;
-	
+
 	private UnitCommandType(int ID) {
 		this.ID = ID;
 		idToUnitCommandType.put(ID, this);
 	}
-	
+
 	public void initialize(int[] data, int index, String name) {
-		if (ID != data[index++])
+		if (this.ID != data[index++]) {
 			throw new IllegalArgumentException();
+		}
 		this.name = name;
 	}
-	
+
 	public String getName() {
-		return name;
+		return this.name;
 	}
-	
+
 	public int getID() {
-		return ID;
+		return this.ID;
 	}
-	
+
 	@Override
 	public String toString() {
 		return getName() + " (" + getID() + ")";
 	}
-	
 }

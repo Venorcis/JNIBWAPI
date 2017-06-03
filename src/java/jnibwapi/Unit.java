@@ -1,30 +1,32 @@
 package jnibwapi;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import jnibwapi.Position.PosType;
-import jnibwapi.types.*;
+import jnibwapi.types.OrderType;
 import jnibwapi.types.OrderType.OrderTypes;
+import jnibwapi.types.TechType;
 import jnibwapi.types.TechType.TechTypes;
+import jnibwapi.types.UnitCommandType;
 import jnibwapi.types.UnitCommandType.UnitCommandTypes;
+import jnibwapi.types.UnitType;
 import jnibwapi.types.UnitType.UnitTypes;
+import jnibwapi.types.UpgradeType;
 import jnibwapi.types.UpgradeType.UpgradeTypes;
 
 /**
  * Represents a StarCraft unit.
- * 
+ *
  * For a description of fields see: http://code.google.com/p/bwapi/wiki/Unit
  */
 public class Unit implements Cloneable {
-	
 	public static final int numAttributes = 123;
 	public static final double TO_DEGREES = 180.0 / Math.PI;
 	public static final double fixedScale = 100.0;
-	
+
 	private final JNIBWAPI bwapi;
-	
-	private int ID;
+	private final int ID;
 	private int replayID;
 	private int playerID;
 	private int typeID;
@@ -46,8 +48,6 @@ public class Unit implements Cloneable {
 	private int initialTypeID;
 	private int initialX;
 	private int initialY;
-	private int initialTileX;
-	private int initialTileY;
 	private int initialHitPoints;
 	private int initialResources;
 	private int killCount;
@@ -90,10 +90,9 @@ public class Unit implements Cloneable {
 	private int addOnID;
 	private int nydusExitUnitID;
 	private int transportID;
-	private int loadedUnitsCount;
 	private int carrierUnitID;
-	private int hatcheryUnitID;
 	private int larvaCount;
+	private int hatcheryUnitID;
 	private int powerUpUnitID;
 	private boolean exists;
 	private boolean nukeReady;
@@ -147,168 +146,175 @@ public class Unit implements Cloneable {
 	private boolean unpowered;
 	private boolean upgrading;
 	private boolean visible;
-	
+
 	public Unit(int ID, JNIBWAPI bwapi) {
 		this.ID = ID;
 		this.bwapi = bwapi;
 	}
-	
-	public void setDestroyed()
-	{
-		exists = false;
+
+	public void setDestroyed() {
+		this.exists = false;
 	}
-	
+
 	public void update(int[] data, int index) {
-		index++; // ID = data[index++];
-		replayID = data[index++];
-		playerID = data[index++];
-		typeID = data[index++];
-		x = data[index++];
-		y = data[index++];
-		tileX = data[index++];
-		tileY = data[index++];
-		angle = data[index++] / TO_DEGREES;
-		velocityX = data[index++] / fixedScale;
-		velocityY = data[index++] / fixedScale;
-		hitPoints = data[index++];
-		shield = data[index++];
-		energy = data[index++];
-		resources = data[index++];
-		resourceGroup = data[index++];
-		lastCommandFrame = data[index++];
-		lastCommandID = data[index++];
-		lastAttackingPlayerID = data[index++];
-		initialTypeID = data[index++];
-		initialX = data[index++];
-		initialY = data[index++];
-		initialTileX = data[index++];
-		initialTileY = data[index++];
-		initialHitPoints = data[index++];
-		initialResources = data[index++];
-		killCount = data[index++];
-		acidSporeCount = data[index++];
-		interceptorCount = data[index++];
-		scarabCount = data[index++];
-		spiderMineCount = data[index++];
-		groundWeaponCooldown = data[index++];
-		airWeaponCooldown = data[index++];
-		spellCooldown = data[index++];
-		defenseMatrixPoints = data[index++];
-		defenseMatrixTimer = data[index++];
-		ensnareTimer = data[index++];
-		irradiateTimer = data[index++];
-		lockdownTimer = data[index++];
-		maelstromTimer = data[index++];
-		orderTimer = data[index++];
-		plagueTimer = data[index++];
-		removeTimer = data[index++];
-		stasisTimer = data[index++];
-		stimTimer = data[index++];
-		buildTypeID = data[index++];
-		trainingQueueSize = data[index++];
-		researchingTechID = data[index++];
-		upgradingUpgradeID = data[index++];
-		remainingBuildTimer = data[index++];
-		remainingTrainTime = data[index++];
-		remainingResearchTime = data[index++];
-		remainingUpgradeTime = data[index++];
-		buildUnitID = data[index++];
-		targetUnitID = data[index++];
-		targetX = data[index++];
-		targetY = data[index++];
-		orderID = data[index++];
-		orderTargetID = data[index++];
-		secondaryOrderID = data[index++];
-		rallyX = data[index++];
-		rallyY = data[index++];
-		rallyUnitID = data[index++];
-		addOnID = data[index++];
-		nydusExitUnitID = data[index++];
-		transportID = data[index++];
-		loadedUnitsCount = data[index++];
-		carrierUnitID = data[index++];
-		hatcheryUnitID = data[index++];
-		larvaCount = data[index++];
-		powerUpUnitID = data[index++];
-		exists = data[index++] == 1;
-		nukeReady = data[index++] == 1;
-		accelerating = data[index++] == 1;
-		attacking = data[index++] == 1;
-		attackFrame = data[index++] == 1;
-		beingConstructed = data[index++] == 1;
-		beingGathered = data[index++] == 1;
-		beingHealed = data[index++] == 1;
-		blind = data[index++] == 1;
-		braking = data[index++] == 1;
-		burrowed = data[index++] == 1;
-		carryingGas = data[index++] == 1;
-		carryingMinerals = data[index++] == 1;
-		cloaked = data[index++] == 1;
-		completed = data[index++] == 1;
-		constructing = data[index++] == 1;
-		defenseMatrixed = data[index++] == 1;
-		detected = data[index++] == 1;
-		ensnared = data[index++] == 1;
-		following = data[index++] == 1;
-		gatheringGas = data[index++] == 1;
-		gatheringMinerals = data[index++] == 1;
-		hallucination = data[index++] == 1;
-		holdingPosition = data[index++] == 1;
-		idle = data[index++] == 1;
-		interruptable = data[index++] == 1;
-		invincible = data[index++] == 1;
-		irradiated = data[index++] == 1;
-		lifted = data[index++] == 1;
-		loaded = data[index++] == 1;
-		lockedDown = data[index++] == 1;
-		maelstrommed = data[index++] == 1;
-		morphing = data[index++] == 1;
-		moving = data[index++] == 1;
-		parasited = data[index++] == 1;
-		patrolling = data[index++] == 1;
-		plagued = data[index++] == 1;
-		repairing = data[index++] == 1;
-		selected = data[index++] == 1;
-		sieged = data[index++] == 1;
-		startingAttack = data[index++] == 1;
-		stasised = data[index++] == 1;
-		stimmed = data[index++] == 1;
-		stuck = data[index++] == 1;
-		training = data[index++] == 1;
-		underAttack = data[index++] == 1;
-		underDarkSwarm = data[index++] == 1;
-		underDisruptionWeb = data[index++] == 1;
-		underStorm = data[index++] == 1;
-		unpowered = data[index++] == 1;
-		upgrading = data[index++] == 1;
-		visible = data[index++] == 1;
+		if (this.ID != data[index++]) {
+			throw new IllegalArgumentException();
+		}
+		this.replayID = data[index++];
+		this.playerID = data[index++];
+		this.typeID = data[index++];
+		this.x = data[index++];
+		this.y = data[index++];
+		this.tileX = data[index++];
+		this.tileY = data[index++];
+		this.angle = (data[index++] / TO_DEGREES);
+		this.velocityX = (data[index++] / fixedScale);
+		this.velocityY = (data[index++] / fixedScale);
+		this.hitPoints = data[index++];
+		this.shield = data[index++];
+		this.energy = data[index++];
+		this.resources = data[index++];
+		this.resourceGroup = data[index++];
+		this.lastCommandFrame = data[index++];
+		this.lastCommandID = data[index++];
+		this.lastAttackingPlayerID = data[index++];
+		this.initialTypeID = data[index++];
+		this.initialX = data[index++];
+		this.initialY = data[index++];
+		index++; // initialTileX
+		index++; // initialTileY
+		this.initialHitPoints = data[index++];
+		this.initialResources = data[index++];
+		this.killCount = data[index++];
+		this.acidSporeCount = data[index++];
+		this.interceptorCount = data[index++];
+		this.scarabCount = data[index++];
+		this.spiderMineCount = data[index++];
+		this.groundWeaponCooldown = data[index++];
+		this.airWeaponCooldown = data[index++];
+		this.spellCooldown = data[index++];
+		this.defenseMatrixPoints = data[index++];
+		this.defenseMatrixTimer = data[index++];
+		this.ensnareTimer = data[index++];
+		this.irradiateTimer = data[index++];
+		this.lockdownTimer = data[index++];
+		this.maelstromTimer = data[index++];
+		this.orderTimer = data[index++];
+		this.plagueTimer = data[index++];
+		this.removeTimer = data[index++];
+		this.stasisTimer = data[index++];
+		this.stimTimer = data[index++];
+		this.buildTypeID = data[index++];
+		this.trainingQueueSize = data[index++];
+		this.researchingTechID = data[index++];
+		this.upgradingUpgradeID = data[index++];
+		this.remainingBuildTimer = data[index++];
+		this.remainingTrainTime = data[index++];
+		this.remainingResearchTime = data[index++];
+		this.remainingUpgradeTime = data[index++];
+		this.buildUnitID = data[index++];
+		this.targetUnitID = data[index++];
+		this.targetX = data[index++];
+		this.targetY = data[index++];
+		this.orderID = data[index++];
+		this.orderTargetID = data[index++];
+		this.secondaryOrderID = data[index++];
+		this.rallyX = data[index++];
+		this.rallyY = data[index++];
+		this.rallyUnitID = data[index++];
+		this.addOnID = data[index++];
+		this.nydusExitUnitID = data[index++];
+		this.transportID = data[index++];
+		index++; // loadedUnitsCount
+		this.carrierUnitID = data[index++];
+		this.hatcheryUnitID = data[index++];
+		this.larvaCount = data[index++];
+		this.powerUpUnitID = data[index++];
+		this.exists = (data[index++] == 1);
+		this.nukeReady = (data[index++] == 1);
+		this.accelerating = (data[index++] == 1);
+		this.attacking = (data[index++] == 1);
+		this.attackFrame = (data[index++] == 1);
+		this.beingConstructed = (data[index++] == 1);
+		this.beingGathered = (data[index++] == 1);
+		this.beingHealed = (data[index++] == 1);
+		this.blind = (data[index++] == 1);
+		this.braking = (data[index++] == 1);
+		this.burrowed = (data[index++] == 1);
+		this.carryingGas = (data[index++] == 1);
+		this.carryingMinerals = (data[index++] == 1);
+		this.cloaked = (data[index++] == 1);
+		this.completed = (data[index++] == 1);
+		this.constructing = (data[index++] == 1);
+		this.defenseMatrixed = (data[index++] == 1);
+		this.detected = (data[index++] == 1);
+		this.ensnared = (data[index++] == 1);
+		this.following = (data[index++] == 1);
+		this.gatheringGas = (data[index++] == 1);
+		this.gatheringMinerals = (data[index++] == 1);
+		this.hallucination = (data[index++] == 1);
+		this.holdingPosition = (data[index++] == 1);
+		this.idle = (data[index++] == 1);
+		this.interruptable = (data[index++] == 1);
+		this.invincible = (data[index++] == 1);
+		this.irradiated = (data[index++] == 1);
+		this.lifted = (data[index++] == 1);
+		this.loaded = (data[index++] == 1);
+		this.lockedDown = (data[index++] == 1);
+		this.maelstrommed = (data[index++] == 1);
+		this.morphing = (data[index++] == 1);
+		this.moving = (data[index++] == 1);
+		this.parasited = (data[index++] == 1);
+		this.patrolling = (data[index++] == 1);
+		this.plagued = (data[index++] == 1);
+		this.repairing = (data[index++] == 1);
+		this.selected = (data[index++] == 1);
+		this.sieged = (data[index++] == 1);
+		this.startingAttack = (data[index++] == 1);
+		this.stasised = (data[index++] == 1);
+		this.stimmed = (data[index++] == 1);
+		this.stuck = (data[index++] == 1);
+		this.training = (data[index++] == 1);
+		this.underAttack = (data[index++] == 1);
+		this.underDarkSwarm = (data[index++] == 1);
+		this.underDisruptionWeb = (data[index++] == 1);
+		this.underStorm = (data[index++] == 1);
+		this.unpowered = (data[index++] == 1);
+		this.upgrading = (data[index++] == 1);
+		this.visible = (data[index++] == 1);
 	}
-	
+
 	@Override
 	public Unit clone() {
 		/*
-		 * Safe to use clone for this class because it has only primitive fields and a reference to
-		 * BWAPI, which should be shallow-copied. Beware when using equals or == with cloned Units
-		 * as they will be considered equal (and not ==) regardless of any changes in their
-		 * properties over time.
+		 * Safe to use clone for this class because it has only primitive fields
+		 * and a reference to BWAPI, which should be shallow-copied. Beware when
+		 * using equals or == with cloned Units as they will be considered equal
+		 * (and not ==) regardless of any changes in their properties over time.
 		 */
 		try {
 			return (Unit) super.clone();
 		} catch (CloneNotSupportedException e) {
-			// Should never happen, as this implements Cloneable and extends Object
+			// Should never happen, as this implements Cloneable and extends
+			// Object
 			e.printStackTrace();
 			return null;
 		}
 	}
-	
-	/** Returns the edge-to-edge distance between the current unit and the target unit. */
+
+	/**
+	 * Returns the edge-to-edge distance between the current unit and the target
+	 * unit.
+	 */
 	public double getDistance(Unit target) {
-		if (!isExists() || target == null || !target.isExists())
+		if (!isExists() || target == null || !target.isExists()) {
 			return Integer.MAX_VALUE;
-		
-		if (this == target)
+		}
+
+		if (this == target) {
 			return 0;
-		
+		}
+
 		int xDist = getLeft() - (target.getRight() + 1);
 		if (xDist < 0) {
 			xDist = target.getLeft() - (getRight() + 1);
@@ -325,11 +331,15 @@ public class Unit implements Cloneable {
 		}
 		return new Position(0, 0).getPDistance(new Position(xDist, yDist));
 	}
-	
-	/** Returns the distance from the edge of the current unit to the target position. */
+
+	/**
+	 * Returns the distance from the edge of the current unit to the target
+	 * position.
+	 */
 	public double getDistance(Position target) {
-		if (!isExists())
+		if (!isExists()) {
 			return Integer.MAX_VALUE;
+		}
 		int xDist = getLeft() - (target.getPX() + 1);
 		if (xDist < 0) {
 			xDist = target.getPX() - (getRight() + 1);
@@ -346,704 +356,540 @@ public class Unit implements Cloneable {
 		}
 		return new Position(0, 0).getPDistance(new Position(xDist, yDist));
 	}
-	
+
 	/** The top left corner of the unit's collision boundary. */
 	public Position getTopLeft() {
 		return new Position(getLeft(), getTop());
 	}
-	
+
 	/** The bottom right corner of the unit's collision boundary. */
 	public Position getBottomRight() {
 		return new Position(getRight(), getBottom());
 	}
-	
+
 	private int getLeft() {
-		return x - getType().getDimensionLeft();
+		return this.x - getType().getDimensionLeft();
 	}
-	
+
 	private int getTop() {
-		return y - getType().getDimensionUp();
+		return this.y - getType().getDimensionUp();
 	}
-	
+
 	private int getRight() {
-		return x + getType().getDimensionRight();
+		return this.x + getType().getDimensionRight();
 	}
-	
+
 	private int getBottom() {
-		return y + getType().getDimensionDown();
+		return this.y + getType().getDimensionDown();
 	}
-	
-	// ------------------------------ FIELD ACCESSOR METHODS ------------------------------ //
-	
+
+	// ------------------------------ FIELD ACCESSOR METHODS
+	// ------------------------------ //
+
 	public int getID() {
-		return ID;
+		return this.ID;
 	}
-	
+
 	public int getReplayID() {
-		return replayID;
+		return this.replayID;
 	}
-	
-	@Deprecated
-	public int getPlayerID() {
-		return playerID;
-	}
-	
+
 	public Player getPlayer() {
-		return bwapi.getPlayer(playerID);
+		return this.bwapi.getPlayer(this.playerID);
 	}
-	
-	@Deprecated
-	public int getTypeID() {
-		return typeID;
-	}
-	
+
 	public UnitType getType() {
-		return UnitTypes.getUnitType(typeID);
+		return UnitTypes.getUnitType(this.typeID);
 	}
-	
+
 	/** Gives the position of the <b>center</b> of the unit. */
 	public Position getPosition() {
-		return new Position(x, y);
+		return new Position(this.x, this.y);
 	}
-	
-	/** @deprecated use {@link #getPosition()} */
-	public int getX() {
-		return x;
-	}
-	
-	/** @deprecated use {@link #getPosition()} */
-	public int getY() {
-		return y;
-	}
-	
+
 	/**
-	 * Returns the position of the top-left build tile occupied by the unit. Most useful for
-	 * buildings. Always above-left of {@link #getPosition()} and above-left or equal to
-	 * {@link #getTopLeft()}
+	 * Returns the position of the top-left build tile occupied by the unit.
+	 * Most useful for buildings. Always above-left of {@link #getPosition()}
+	 * and above-left or equal to {@link #getTopLeft()}
 	 */
 	public Position getTilePosition() {
-		return new Position(tileX, tileY, PosType.BUILD);
+		return new Position(this.tileX, this.tileY, PosType.BUILD);
 	}
-	
-	/** @deprecated use {@link #getTilePosition()} */
-	public int getTileX() {
-		return tileX;
-	}
-	
-	/** @deprecated use {@link #getTilePosition()} */
-	public int getTileY() {
-		return tileY;
-	}
-	
+
 	public double getAngle() {
-		return angle;
+		return this.angle;
 	}
-	
+
 	public double getVelocityX() {
-		return velocityX;
+		return this.velocityX;
 	}
-	
+
 	public double getVelocityY() {
-		return velocityY;
+		return this.velocityY;
 	}
-	
+
 	public int getHitPoints() {
-		return hitPoints;
+		return this.hitPoints;
 	}
-	
+
 	public int getShields() {
-		return shield;
+		return this.shield;
 	}
-	
+
 	public int getEnergy() {
-		return energy;
+		return this.energy;
 	}
-	
+
 	public int getResources() {
-		return resources;
+		return this.resources;
 	}
-	
+
 	public int getResourceGroup() {
-		return resourceGroup;
+		return this.resourceGroup;
 	}
-	
+
 	public boolean hasPath(Unit target) {
-		return bwapi.hasPath(this.getID(), target.getID());
+		return this.bwapi.hasPath(getID(), target.getID());
 	}
-	
+
 	public boolean hasPath(Position target) {
-		return bwapi.hasPath(this.getID(), target.getPX(), target.getPY());
+		return this.bwapi.hasPath(getPosition(), target);
 	}
-	
+
 	public int getLastCommandFrame() {
-		return lastCommandFrame;
+		return this.lastCommandFrame;
 	}
-	
-	@Deprecated
-	public int getLastCommandID() {
-		return lastCommandID;
-	}
-	
+
 	public UnitCommandType getLastCommand() {
-		return UnitCommandTypes.getUnitCommandType(lastCommandID);
+		return UnitCommandTypes.getUnitCommandType(this.lastCommandID);
 	}
-	
-	@Deprecated
-	public int getLastAttackingPlayerID() {
-		return lastAttackingPlayerID;
-	}
-	
+
 	public Player getLastAttackingPlayer() {
-		return bwapi.getPlayer(lastAttackingPlayerID);
+		return this.bwapi.getPlayer(this.lastAttackingPlayerID);
 	}
-	
-	@Deprecated
-	public int getInitialTypeID() {
-		return initialTypeID;
-	}
-	
+
 	public UnitType getInitialType() {
-		return UnitTypes.getUnitType(initialTypeID);
+		return UnitTypes.getUnitType(this.initialTypeID);
 	}
-	
-	/** @deprecated use {@link #getInitialPosition()} */
-	public int getInitialX() {
-		return initialX;
-	}
-	
-	/** @deprecated use {@link #getInitialPosition()} */
-	public int getInitialY() {
-		return initialY;
-	}
-	
-	/** @deprecated use {@link #getInitialPosition()} */
-	public int getInitialTileX() {
-		return initialTileX;
-	}
-	
-	/** @deprecated use {@link #getInitialPosition()} */
-	public int getInitialTileY() {
-		return initialTileY;
-	}
-	
+
 	public Position getInitialPosition() {
-		return new Position(initialX, initialY);
+		return new Position(this.initialX, this.initialY);
 	}
-	
+
 	public int getInitialHitPoints() {
-		return initialHitPoints;
+		return this.initialHitPoints;
 	}
-	
+
 	public int getInitialResources() {
-		return initialResources;
+		return this.initialResources;
 	}
-	
+
 	public int getKillCount() {
-		return killCount;
+		return this.killCount;
 	}
-	
+
 	public int getAcidSporeCount() {
-		return acidSporeCount;
+		return this.acidSporeCount;
 	}
-	
+
 	public int getInterceptorCount() {
-		return interceptorCount;
+		return this.interceptorCount;
 	}
-	
+
 	public List<Unit> getInterceptors() {
-		List<Unit> interceptors = new ArrayList<>(8);
-		for (int id : bwapi.getInterceptors(ID)) {
-			interceptors.add(bwapi.getUnit(id));
+		List<Unit> interceptors = new LinkedList<>();
+		for (int id : this.bwapi.getInterceptors(this.ID)) {
+			interceptors.add(this.bwapi.getUnit(id));
 		}
 		return interceptors;
 	}
-	
+
 	public int getScarabCount() {
-		return scarabCount;
+		return this.scarabCount;
 	}
-	
+
 	public int getSpiderMineCount() {
-		return spiderMineCount;
+		return this.spiderMineCount;
 	}
-	
+
 	public int getGroundWeaponCooldown() {
-		return groundWeaponCooldown;
+		return this.groundWeaponCooldown;
 	}
-	
+
 	public int getAirWeaponCooldown() {
-		return airWeaponCooldown;
+		return this.airWeaponCooldown;
 	}
-	
+
 	public int getSpellCooldown() {
-		return spellCooldown;
+		return this.spellCooldown;
 	}
-	
+
 	public int getDefenseMatrixPoints() {
-		return defenseMatrixPoints;
+		return this.defenseMatrixPoints;
 	}
-	
+
 	public int getDefenseMatrixTimer() {
-		return defenseMatrixTimer;
+		return this.defenseMatrixTimer;
 	}
-	
+
 	public int getEnsnareTimer() {
-		return ensnareTimer;
+		return this.ensnareTimer;
 	}
-	
+
 	public int getIrradiateTimer() {
-		return irradiateTimer;
+		return this.irradiateTimer;
 	}
-	
+
 	public int getLockdownTimer() {
-		return lockdownTimer;
+		return this.lockdownTimer;
 	}
-	
+
 	public int getMaelstromTimer() {
-		return maelstromTimer;
+		return this.maelstromTimer;
 	}
-	
+
 	public int getOrderTimer() {
-		return orderTimer;
+		return this.orderTimer;
 	}
-	
+
 	public int getPlagueTimer() {
-		return plagueTimer;
+		return this.plagueTimer;
 	}
-	
+
 	public int getRemoveTimer() {
-		return removeTimer;
+		return this.removeTimer;
 	}
-	
+
 	public int getStasisTimer() {
-		return stasisTimer;
+		return this.stasisTimer;
 	}
-	
+
 	public int getStimTimer() {
-		return stimTimer;
+		return this.stimTimer;
 	}
-	
-	@Deprecated
-	public int getBuildTypeID() {
-		return buildTypeID;
-	}
-	
+
 	public UnitType getBuildType() {
-		return UnitTypes.getUnitType(buildTypeID);
+		return UnitTypes.getUnitType(this.buildTypeID);
 	}
-	
+
 	public int getTrainingQueueSize() {
-		return trainingQueueSize;
+		return this.trainingQueueSize;
 	}
-	
-	@Deprecated
-	public int getResearchingTechID() {
-		return researchingTechID;
-	}
-	
+
 	public TechType getTech() {
-		return TechTypes.getTechType(researchingTechID);
+		return TechTypes.getTechType(this.researchingTechID);
 	}
-	
-	@Deprecated
-	public int getUpgradingUpgradeID() {
-		return upgradingUpgradeID;
-	}
-	
+
 	public UpgradeType getUpgrade() {
-		return UpgradeTypes.getUpgradeType(upgradingUpgradeID);
+		return UpgradeTypes.getUpgradeType(this.upgradingUpgradeID);
 	}
-	
+
 	public int getRemainingBuildTimer() {
-		return remainingBuildTimer;
+		return this.remainingBuildTimer;
 	}
-	
+
 	public int getRemainingTrainTime() {
-		return remainingTrainTime;
+		return this.remainingTrainTime;
 	}
-	
+
 	public int getRemainingResearchTime() {
-		return remainingResearchTime;
+		return this.remainingResearchTime;
 	}
-	
+
 	public int getRemainingUpgradeTime() {
-		return remainingUpgradeTime;
+		return this.remainingUpgradeTime;
 	}
-	
-	@Deprecated
-	public int getBuildUnitID() {
-		return buildUnitID;
-	}
-	
+
 	public Unit getBuildUnit() {
-		return bwapi.getUnit(buildUnitID);
+		return this.bwapi.getUnit(this.buildUnitID);
 	}
-	
-	@Deprecated
-	public int getTargetUnitID() {
-		return targetUnitID;
-	}
-	
+
 	public Unit getTarget() {
-		return bwapi.getUnit(targetUnitID);
+		return this.bwapi.getUnit(this.targetUnitID);
 	}
-	
-	@Deprecated
-	public int getTargetX() {
-		return targetX;
-	}
-	
-	@Deprecated
-	public int getTargetY() {
-		return targetY;
-	}
-	
+
 	public Position getTargetPosition() {
-		return new Position(targetX, targetY);
+		return new Position(this.targetX, this.targetY);
 	}
-	
-	@Deprecated
-	public int getOrderID() {
-		return orderID;
-	}
-	
+
 	public OrderType getOrder() {
-		return OrderTypes.getOrderType(orderID);
+		return OrderTypes.getOrderType(this.orderID);
 	}
-	
-	@Deprecated
-	public int getOrderTargetUnitID() {
-		return orderTargetID;
-	}
-	
+
 	public Unit getOrderTarget() {
-		return bwapi.getUnit(orderTargetID);
+		return this.bwapi.getUnit(this.orderTargetID);
 	}
-	
-	@Deprecated
-	public int getSecondaryOrderID() {
-		return secondaryOrderID;
-	}
-	
+
 	public OrderType getSecondaryOrder() {
-		return OrderTypes.getOrderType(secondaryOrderID);
+		return OrderTypes.getOrderType(this.secondaryOrderID);
 	}
-	
-	@Deprecated
-	public int getRallyX() {
-		return rallyX;
-	}
-	
-	@Deprecated
-	public int getRallyY() {
-		return rallyY;
-	}
-	
+
 	public Position getRallyPosition() {
-		return new Position(rallyX, rallyY);
+		return new Position(this.rallyX, this.rallyY);
 	}
-	
-	@Deprecated
-	public int getRallyUnitID() {
-		return rallyUnitID;
-	}
-	
+
 	public Unit getRallyUnit() {
-		return bwapi.getUnit(rallyUnitID);
+		return this.bwapi.getUnit(this.rallyUnitID);
 	}
-	
-	@Deprecated
-	public int getAddOnUnitID() {
-		return addOnID;
-	}
-	
+
 	public Unit getAddon() {
-		return bwapi.getUnit(addOnID);
+		return this.bwapi.getUnit(this.addOnID);
 	}
-	
-	@Deprecated
-	public int getNydusExitUnitID() {
-		return nydusExitUnitID;
-	}
-	
+
 	public Unit getNydusExit() {
-		return bwapi.getUnit(nydusExitUnitID);
+		return this.bwapi.getUnit(this.nydusExitUnitID);
 	}
-	
-	@Deprecated
-	public int getTransportUnitID() {
-		return transportID;
-	}
-	
+
 	public Unit getTransport() {
-		return bwapi.getUnit(transportID);
+		return this.bwapi.getUnit(this.transportID);
 	}
-	
-	@Deprecated
-	public int getLoadedUnitsCount() {
-		return loadedUnitsCount;
-	}
-	
+
 	public List<Unit> getLoadedUnits() {
-		List<Unit> units = new ArrayList<Unit>();
-		for (int id : bwapi.getLoadedUnits(ID)) {
-			units.add(bwapi.getUnit(id));
+		List<Unit> units = new LinkedList<>();
+		for (int id : this.bwapi.getLoadedUnits(this.ID)) {
+			units.add(this.bwapi.getUnit(id));
 		}
 		return units;
 	}
-	
-	@Deprecated
-	public int getCarrierUnitID() {
-		return carrierUnitID;
-	}
-	
+
 	public Unit getCarrier() {
-		return bwapi.getUnit(carrierUnitID);
+		return this.bwapi.getUnit(this.carrierUnitID);
 	}
-	
-	@Deprecated
-	public int getHatcheryUnitID() {
-		return hatcheryUnitID;
-	}
-	
+
 	public Unit getHatchery() {
-		return bwapi.getUnit(hatcheryUnitID);
+		return this.bwapi.getUnit(this.hatcheryUnitID);
 	}
-	
-	@Deprecated
+
 	public int getLarvaCount() {
-		return larvaCount;
+		return this.larvaCount;
 	}
-	
+
 	public List<Unit> getLarva() {
-		List<Unit> larva = new ArrayList<>(3);
-		for (int id : bwapi.getLarva(ID)) {
-			larva.add(bwapi.getUnit(id));
+		List<Unit> larva = new LinkedList<>();
+		for (int id : this.bwapi.getLarva(this.ID)) {
+			larva.add(this.bwapi.getUnit(id));
 		}
 		return larva;
 	}
-	
-	@Deprecated
-	public int getPowerUpUnitID() {
-		return powerUpUnitID;
-	}
-	
+
 	public Unit getPowerUp() {
-		return bwapi.getUnit(powerUpUnitID);
+		return this.bwapi.getUnit(this.powerUpUnitID);
 	}
-	
+
 	public boolean isExists() {
-		return exists;
+		return this.exists;
 	}
-	
+
 	public boolean isNukeReady() {
-		return nukeReady;
+		return this.nukeReady;
 	}
-	
+
 	public boolean isAccelerating() {
-		return accelerating;
+		return this.accelerating;
 	}
-	
+
 	public boolean isAttacking() {
-		return attacking;
+		return this.attacking;
 	}
-	
+
 	public boolean isAttackFrame() {
-		return attackFrame;
+		return this.attackFrame;
 	}
-	
+
 	public boolean isBeingConstructed() {
-		return beingConstructed;
+		return this.beingConstructed;
 	}
-	
+
 	public boolean isBeingGathered() {
-		return beingGathered;
+		return this.beingGathered;
 	}
-	
+
 	public boolean isBeingHealed() {
-		return beingHealed;
+		return this.beingHealed;
 	}
-	
+
 	public boolean isBlind() {
-		return blind;
+		return this.blind;
 	}
-	
+
 	public boolean isBraking() {
-		return braking;
+		return this.braking;
 	}
-	
+
 	public boolean isBurrowed() {
-		return burrowed;
+		return this.burrowed;
 	}
-	
+
 	public boolean isCarryingGas() {
-		return carryingGas;
+		return this.carryingGas;
 	}
-	
+
 	public boolean isCarryingMinerals() {
-		return carryingMinerals;
+		return this.carryingMinerals;
 	}
-	
+
 	public boolean isCloaked() {
-		return cloaked;
+		return this.cloaked;
 	}
-	
+
 	public boolean isCompleted() {
-		return completed;
+		return this.completed;
 	}
-	
+
 	public boolean isConstructing() {
-		return constructing;
+		return this.constructing;
 	}
-	
+
 	public boolean isDefenseMatrixed() {
-		return defenseMatrixed;
+		return this.defenseMatrixed;
 	}
-	
+
 	public boolean isDetected() {
-		return detected;
+		return this.detected;
 	}
-	
+
 	public boolean isEnsnared() {
-		return ensnared;
+		return this.ensnared;
 	}
-	
+
 	public boolean isFollowing() {
-		return following;
+		return this.following;
 	}
-	
+
 	public boolean isGatheringGas() {
-		return gatheringGas;
+		return this.gatheringGas;
 	}
-	
+
 	public boolean isGatheringMinerals() {
-		return gatheringMinerals;
+		return this.gatheringMinerals;
 	}
-	
+
 	public boolean isHallucination() {
-		return hallucination;
+		return this.hallucination;
 	}
-	
+
 	public boolean isHoldingPosition() {
-		return holdingPosition;
+		return this.holdingPosition;
 	}
-	
+
 	public boolean isIdle() {
-		return idle;
+		return this.idle;
 	}
-	
+
 	public boolean isInterruptable() {
-		return interruptable;
+		return this.interruptable;
 	}
-	
+
 	public boolean isInvincible() {
-		return invincible;
+		return this.invincible;
 	}
-	
+
 	public boolean isIrradiated() {
-		return irradiated;
+		return this.irradiated;
 	}
-	
+
 	public boolean isLifted() {
-		return lifted;
+		return this.lifted;
 	}
-	
+
 	public boolean isLoaded() {
-		return loaded;
+		return this.loaded;
 	}
-	
+
 	public boolean isLockedDown() {
-		return lockedDown;
+		return this.lockedDown;
 	}
-	
+
 	public boolean isMaelstrommed() {
-		return maelstrommed;
+		return this.maelstrommed;
 	}
-	
+
 	public boolean isMorphing() {
-		return morphing;
+		return this.morphing;
 	}
-	
+
 	public boolean isMoving() {
-		return moving;
+		return this.moving;
 	}
-	
+
 	public boolean isParasited() {
-		return parasited;
+		return this.parasited;
 	}
-	
+
 	public boolean isPatrolling() {
-		return patrolling;
+		return this.patrolling;
 	}
-	
+
 	public boolean isPlagued() {
-		return plagued;
+		return this.plagued;
 	}
-	
+
 	public boolean isRepairing() {
-		return repairing;
+		return this.repairing;
 	}
-	
+
 	public boolean isSelected() {
-		return selected;
+		return this.selected;
 	}
-	
+
 	public boolean isSieged() {
-		return sieged;
+		return this.sieged;
 	}
-	
+
 	public boolean isStartingAttack() {
-		return startingAttack;
+		return this.startingAttack;
 	}
-	
+
 	public boolean isStasised() {
-		return stasised;
+		return this.stasised;
 	}
-	
+
 	public boolean isStimmed() {
-		return stimmed;
+		return this.stimmed;
 	}
-	
+
 	public boolean isStuck() {
-		return stuck;
+		return this.stuck;
 	}
-	
+
 	public boolean isTraining() {
-		return training;
+		return this.training;
 	}
-	
+
 	public boolean isUnderAttack() {
-		return underAttack;
+		return this.underAttack;
 	}
-	
+
 	public boolean isUnderDarkSwarm() {
-		return underDarkSwarm;
+		return this.underDarkSwarm;
 	}
-	
+
 	public boolean isUnderDisruptionWeb() {
-		return underDisruptionWeb;
+		return this.underDisruptionWeb;
 	}
-	
+
 	public boolean isUnderStorm() {
-		return underStorm;
+		return this.underStorm;
 	}
-	
+
 	public boolean isUnpowered() {
-		return unpowered;
+		return this.unpowered;
 	}
-	
+
 	public boolean isUpgrading() {
-		return upgrading;
+		return this.upgrading;
 	}
-	
+
 	public boolean isVisible() {
-		return visible;
+		return this.visible;
 	}
-	
+
 	public boolean isVisible(Player p) {
-		return bwapi.isVisibleToPlayer(this.getID(), p.getID());
+		return this.bwapi.isVisibleToPlayer(this.getID(), p.getID());
 	}
-	
-	// ------------------------------ UNIT COMMANDS ------------------------------ //
+
+	// ------------------------------ UNIT COMMANDS
+	// ------------------------------ //
 	/**
 	 * Included for completeness to match BWAPI. Preferable to use
 	 * {@link JNIBWAPI#canIssueCommand(UnitCommand)} directly.
@@ -1052,234 +898,240 @@ public class Unit implements Cloneable {
 		if (!this.equals(cmd.getUnit())) {
 			throw new IllegalArgumentException("Unit Command is for a different Unit");
 		}
-		return bwapi.canIssueCommand(cmd);
+		return this.bwapi.canIssueCommand(cmd);
 	}
-	
+
 	/**
-	 * Included for completeness to match BWAPI. Preferable to use other unit commands or
-	 * {@link JNIBWAPI#issueCommand(UnitCommand)} directly.
+	 * Included for completeness to match BWAPI. Preferable to use other unit
+	 * commands or {@link JNIBWAPI#issueCommand(UnitCommand)} directly.
 	 */
 	public boolean issueCommand(UnitCommand cmd) {
 		if (!this.equals(cmd.getUnit())) {
 			throw new IllegalArgumentException("Unit Command is for a different Unit");
 		}
-		return bwapi.issueCommand(cmd);
+		return this.bwapi.issueCommand(cmd);
 	}
-	
+
 	public boolean attack(Position p, boolean queued) {
-		return bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Attack_Move, p, queued));
+		return this.bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Attack_Move, p, queued));
 	}
-	
+
 	public boolean attack(Unit target, boolean queued) {
-		return bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Attack_Unit, target, queued));
+		return this.bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Attack_Unit, target, queued));
 	}
-	
+
 	public boolean build(Position p, UnitType type) {
-		return bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Build, p, type.getID()));
+		return this.bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Build, p, type.getID()));
 	}
-	
+
 	public boolean buildAddon(UnitType type) {
-		return bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Build_Addon, type.getID()));
+		return this.bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Build_Addon, type.getID()));
 	}
-	
+
 	public boolean train(UnitType type) {
-		return bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Train, type.getID()));
+		return this.bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Train, type.getID()));
 	}
-	
+
 	public boolean morph(UnitType type) {
-		return bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Morph, type.getID()));
+		return this.bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Morph, type.getID()));
 	}
-	
+
 	public boolean research(TechType tech) {
-		return bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Research, tech.getID()));
+		return this.bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Research, tech.getID()));
 	}
-	
+
 	public boolean upgrade(UpgradeType upgrade) {
-		return bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Upgrade, upgrade.getID()));
+		return this.bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Upgrade, upgrade.getID()));
 	}
-	
+
 	public boolean setRallyPoint(Position p) {
-		return bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Set_Rally_Position, p));
+		return this.bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Set_Rally_Position, p));
 	}
-	
+
 	public boolean setRallyPoint(Unit target) {
-		return bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Set_Rally_Unit, target));
+		return this.bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Set_Rally_Unit, target));
 	}
-	
+
 	public boolean move(Position p, boolean queued) {
-		return bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Move, p, queued));
+		return this.bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Move, p, queued));
 	}
-	
+
 	public boolean patrol(Position p, boolean queued) {
-		return bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Patrol, p, queued));
+		return this.bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Patrol, p, queued));
 	}
-	
+
 	public boolean holdPosition(boolean queued) {
-		return bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Hold_Position, queued));
+		return this.bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Hold_Position, queued));
 	}
-	
+
 	public boolean stop(boolean queued) {
-		return bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Stop, queued));
+		return this.bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Stop, queued));
 	}
-	
+
 	public boolean follow(Unit target, boolean queued) {
-		return bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Follow, target, queued));
+		return this.bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Follow, target, queued));
 	}
-	
+
 	public boolean gather(Unit target, boolean queued) {
-		return bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Gather, target, queued));
+		return this.bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Gather, target, queued));
 	}
-	
+
 	public boolean returnCargo(boolean queued) {
-		return bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Return_Cargo, queued));
+		return this.bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Return_Cargo, queued));
 	}
-	
+
 	public boolean repair(Unit target, boolean queued) {
-		return bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Repair, target, queued));
+		return this.bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Repair, target, queued));
 	}
-	
+
 	public boolean burrow() {
-		return bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Burrow));
+		return this.bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Burrow));
 	}
-	
+
 	public boolean unburrow() {
-		return bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Unburrow));
+		return this.bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Unburrow));
 	}
-	
+
 	public boolean cloak() {
-		return bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Cloak));
+		return this.bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Cloak));
 	}
-	
+
 	public boolean decloak() {
-		return bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Decloak));
+		return this.bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Decloak));
 	}
-	
+
 	public boolean siege() {
-		return bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Siege));
+		return this.bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Siege));
 	}
-	
+
 	public boolean unsiege() {
-		return bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Unsiege));
+		return this.bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Unsiege));
 	}
-	
+
 	public boolean lift() {
-		return bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Lift));
+		return this.bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Lift));
 	}
-	
+
 	public boolean land(Position p) {
-		return bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Land, p));
+		return this.bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Land, p));
 	}
-	
+
 	public boolean load(Unit target, boolean queued) {
-		return bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Load, target, queued));
+		return this.bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Load, target, queued));
 	}
-	
+
 	public boolean unload(Unit target) {
-		return bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Unload, target));
+		return this.bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Unload, target));
 	}
-	
+
 	public boolean unloadAll(boolean queued) {
-		return bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Unload_All, queued));
+		return this.bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Unload_All, queued));
 	}
-	
+
 	public boolean unloadAll(Position p, boolean queued) {
-		return bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Unload_All_Position, p, queued));
+		return this.bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Unload_All_Position, p, queued));
 	}
-	
+
 	public boolean rightClick(Position p, boolean queued) {
-		return bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Right_Click_Position, p, queued));
+		return this.bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Right_Click_Position, p, queued));
 	}
-	
+
 	public boolean rightClick(Unit target, boolean queued) {
-		return bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Right_Click_Unit, target, queued));
+		return this.bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Right_Click_Unit, target, queued));
 	}
-	
+
 	public boolean haltConstruction() {
-		return bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Halt_Construction));
+		return this.bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Halt_Construction));
 	}
-	
+
 	public boolean cancelConstruction() {
-		return bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Cancel_Construction));
+		return this.bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Cancel_Construction));
 	}
-	
+
 	public boolean cancelAddon() {
-		return bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Cancel_Addon));
+		return this.bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Cancel_Addon));
 	}
-	
+
 	public boolean cancelTrain(int slot) {
-		return bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Cancel_Train_Slot, slot));
+		return this.bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Cancel_Train_Slot, slot));
 	}
-	
+
 	/** Remove the last unit from the training queue. */
 	public boolean cancelTrain() {
-		return bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Cancel_Train, -2));
+		return this.bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Cancel_Train, -2));
 	}
-	
+
 	public boolean cancelMorph() {
-		return bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Cancel_Morph));
+		return this.bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Cancel_Morph));
 	}
-	
+
 	public boolean cancelResearch() {
-		return bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Cancel_Research));
+		return this.bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Cancel_Research));
 	}
-	
+
 	public boolean cancelUpgrade() {
-		return bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Cancel_Upgrade));
+		return this.bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Cancel_Upgrade));
 	}
-	
+
 	public boolean useTech(TechType tech) {
 		UnitCommandType uct = UnitCommandTypes.Use_Tech;
 		if (tech == TechTypes.Burrowing) {
-			if (isBurrowed())
+			if (isBurrowed()) {
 				uct = UnitCommandTypes.Unburrow;
-			else
+			} else {
 				uct = UnitCommandTypes.Burrow;
-		}
-		else if (tech == TechTypes.Cloaking_Field || tech == TechTypes.Personnel_Cloaking) {
-			if (isCloaked())
+			}
+		} else if (tech == TechTypes.Cloaking_Field || tech == TechTypes.Personnel_Cloaking) {
+			if (isCloaked()) {
 				uct = UnitCommandTypes.Decloak;
-			else
+			} else {
 				uct = UnitCommandTypes.Cloak;
-		}
-		else if (tech == TechTypes.Tank_Siege_Mode) {
-			if (isSieged())
+			}
+		} else if (tech == TechTypes.Tank_Siege_Mode) {
+			if (isSieged()) {
 				uct = UnitCommandTypes.Unsiege;
-			else
+			} else {
 				uct = UnitCommandTypes.Siege;
+			}
 		}
-		return bwapi.issueCommand(new UnitCommand(this, uct, tech.getID()));
+		return this.bwapi.issueCommand(new UnitCommand(this, uct, tech.getID()));
 	}
-	
+
 	public boolean useTech(TechType tech, Position p) {
-		return bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Use_Tech_Position, p, tech.getID()));
+		return this.bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Use_Tech_Position, p, tech.getID()));
 	}
-	
+
 	public boolean useTech(TechType tech, Unit target) {
-		return bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Use_Tech_Unit, target, tech.getID()));
+		return this.bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Use_Tech_Unit, target, tech.getID()));
 	}
-	
+
 	public boolean placeCOP(Position p) {
-		return bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Place_COP, p));
+		return this.bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Place_COP, p));
 	}
-	
-	// ------------------------------ HASHCODE & EQUALS ------------------------------ //
-	
+
+	// ------------------------------ HASHCODE & EQUALS
+	// ------------------------------ //
+
 	@Override
 	public int hashCode() {
-		return ID;
+		return this.ID;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		Unit other = (Unit) obj;
-		if (ID != other.ID)
+		if (this.ID != other.ID) {
 			return false;
+		}
 		return true;
 	}
 }
