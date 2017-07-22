@@ -3,7 +3,6 @@ package jnibwapi;
 import java.util.LinkedList;
 import java.util.List;
 
-import jnibwapi.Position.PosType;
 import jnibwapi.types.OrderType;
 import jnibwapi.types.OrderType.OrderTypes;
 import jnibwapi.types.TechType;
@@ -32,8 +31,6 @@ public class Unit implements Cloneable {
 	private int typeID;
 	private int x;
 	private int y;
-	private int tileX;
-	private int tileY;
 	private double angle;
 	private double velocityX;
 	private double velocityY;
@@ -165,8 +162,8 @@ public class Unit implements Cloneable {
 		this.typeID = data[index++];
 		this.x = data[index++];
 		this.y = data[index++];
-		this.tileX = data[index++];
-		this.tileY = data[index++];
+		index++; // tileX
+		index++; // tileY
 		this.angle = (data[index++] / TO_DEGREES);
 		this.velocityX = (data[index++] / fixedScale);
 		this.velocityY = (data[index++] / fixedScale);
@@ -287,10 +284,10 @@ public class Unit implements Cloneable {
 	@Override
 	public Unit clone() {
 		/*
-		 * Safe to use clone for this class because it has only primitive fields
-		 * and a reference to BWAPI, which should be shallow-copied. Beware when
-		 * using equals or == with cloned Units as they will be considered equal
-		 * (and not ==) regardless of any changes in their properties over time.
+		 * Safe to use clone for this class because it has only primitive fields and a
+		 * reference to BWAPI, which should be shallow-copied. Beware when using equals
+		 * or == with cloned Units as they will be considered equal (and not ==)
+		 * regardless of any changes in their properties over time.
 		 */
 		try {
 			return (Unit) super.clone();
@@ -402,18 +399,17 @@ public class Unit implements Cloneable {
 		return UnitTypes.getUnitType(this.typeID);
 	}
 
+	public int getX() {
+		return this.x;
+	}
+
+	public int getY() {
+		return this.y;
+	}
+
 	/** Gives the position of the <b>center</b> of the unit. */
 	public Position getPosition() {
 		return new Position(this.x, this.y);
-	}
-
-	/**
-	 * Returns the position of the top-left build tile occupied by the unit.
-	 * Most useful for buildings. Always above-left of {@link #getPosition()}
-	 * and above-left or equal to {@link #getTopLeft()}
-	 */
-	public Position getTilePosition() {
-		return new Position(this.tileX, this.tileY, PosType.BUILD);
 	}
 
 	public double getAngle() {
@@ -470,6 +466,14 @@ public class Unit implements Cloneable {
 
 	public UnitType getInitialType() {
 		return UnitTypes.getUnitType(this.initialTypeID);
+	}
+
+	public int getInitialX() {
+		return this.initialX;
+	}
+
+	public int getInitialY() {
+		return this.initialY;
 	}
 
 	public Position getInitialPosition() {
@@ -608,6 +612,14 @@ public class Unit implements Cloneable {
 		return this.bwapi.getUnit(this.targetUnitID);
 	}
 
+	public int getTargetX() {
+		return this.targetX;
+	}
+
+	public int getTargetY() {
+		return this.targetY;
+	}
+
 	public Position getTargetPosition() {
 		return new Position(this.targetX, this.targetY);
 	}
@@ -622,6 +634,14 @@ public class Unit implements Cloneable {
 
 	public OrderType getSecondaryOrder() {
 		return OrderTypes.getOrderType(this.secondaryOrderID);
+	}
+
+	public int getRallyX() {
+		return this.rallyX;
+	}
+
+	public int getRallyY() {
+		return this.rallyY;
 	}
 
 	public Position getRallyPosition() {
@@ -885,7 +905,7 @@ public class Unit implements Cloneable {
 	}
 
 	public boolean isVisible(Player p) {
-		return this.bwapi.isVisibleToPlayer(this.getID(), p.getID());
+		return this.bwapi.isVisibleToPlayer(getID(), p.getID());
 	}
 
 	// ------------------------------ UNIT COMMANDS
@@ -895,7 +915,7 @@ public class Unit implements Cloneable {
 	 * {@link JNIBWAPI#canIssueCommand(UnitCommand)} directly.
 	 */
 	public boolean canIssueCommand(UnitCommand cmd) {
-		if (!this.equals(cmd.getUnit())) {
+		if (!equals(cmd.getUnit())) {
 			throw new IllegalArgumentException("Unit Command is for a different Unit");
 		}
 		return this.bwapi.canIssueCommand(cmd);
@@ -906,7 +926,7 @@ public class Unit implements Cloneable {
 	 * commands or {@link JNIBWAPI#issueCommand(UnitCommand)} directly.
 	 */
 	public boolean issueCommand(UnitCommand cmd) {
-		if (!this.equals(cmd.getUnit())) {
+		if (!equals(cmd.getUnit())) {
 			throw new IllegalArgumentException("Unit Command is for a different Unit");
 		}
 		return this.bwapi.issueCommand(cmd);
