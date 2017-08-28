@@ -60,29 +60,12 @@ import jnibwapi.util.ErrorCode;
  * Unit: {@link http://code.google.com/p/bwapi/wiki/Unit}<br>
  */
 public class JNIBWAPI {
-	// load the BWAPI client library
-	static {
-		try {
-			System.loadLibrary("client-bridge-" + System.getProperty("os.arch"));
-			System.out.println("Loaded client bridge library.");
-		} catch (UnsatisfiedLinkError e) {
-			// Help beginners put the DLL in the correct place (although
-			// anywhere on the path will
-			// work)
-			File dll = new File("client-bridge-" + System.getProperty("os.arch") + ".dll");
-			if (!dll.exists()) {
-				System.err.println("Native code library not found: " + dll.getAbsolutePath());
-			}
-			System.err.println("Native code library failed to load." + e);
-		}
-	}
-
 	private static JNIBWAPI instance = null;
 
 	/**
-	 * Get a reference to the JNIBWAPI object. Note it will be unusable until
-	 * the {@link #connected()} callback, and all game-related fields may be
-	 * undefined until the {@link #gameStarted()} callback.
+	 * Get a reference to the JNIBWAPI object. Note it will be unusable until the
+	 * {@link #connected()} callback, and all game-related fields may be undefined
+	 * until the {@link #gameStarted()} callback.
 	 */
 	public static JNIBWAPI getInstance() {
 		return instance;
@@ -101,10 +84,26 @@ public class JNIBWAPI {
 	 *
 	 * @param listener
 	 *            - listener for BWAPI callback events.
+	 * @param DLLdir
+	 *            - load the client-bridge dll from this directory
 	 * @param BWTAdir
 	 *            - use BWTA (with this folder) for map analysis if not null
 	 */
-	public JNIBWAPI(BWAPIEventListener listener, File BWTAdir) {
+	public JNIBWAPI(BWAPIEventListener listener, File DLLdir, File BWTAdir) {
+		if (instance == null) {
+			// load the BWAPI client library
+			File dll1 = new File(DLLdir + File.separator + "gmp-vc90-mt.dll");
+			File dll2 = new File(DLLdir + File.separator + "mpfr-vc90-mt.dll");
+			File dll3 = new File(DLLdir + File.separator + "client-bridge-" + System.getProperty("os.arch") + ".dll");
+			try {
+				System.load(dll1.getAbsolutePath());
+				System.load(dll2.getAbsolutePath());
+				System.load(dll3.getAbsolutePath());
+				System.out.println("Loaded client bridge library.");
+			} catch (UnsatisfiedLinkError e) {
+				System.err.println("Native code library failed to load." + e);
+			}
+		}
 		instance = this;
 		this.listener = listener;
 		this.BWTAdir = BWTAdir;
@@ -120,11 +119,11 @@ public class JNIBWAPI {
 	}
 
 	/**
-	 * Invokes the native library which will connect to the bridge and then
-	 * invoke callback functions.
+	 * Invokes the native library which will connect to the bridge and then invoke
+	 * callback functions.
 	 *
-	 * Note: this method never returns, it should be invoked from a separate
-	 * thread if concurrent java processing is needed.
+	 * Note: this method never returns, it should be invoked from a separate thread
+	 * if concurrent java processing is needed.
 	 */
 	public void start() {
 		startClient(this);
@@ -292,21 +291,21 @@ public class JNIBWAPI {
 	public native void drawIDs(boolean enable);
 
 	/**
-	 * Enable user input so the game can get information from the user (what
-	 * units are selected, chat messages the user enters, etc). Note that this
-	 * can only be enabled at the beginning of a match, during the
+	 * Enable user input so the game can get information from the user (what units
+	 * are selected, chat messages the user enters, etc). Note that this can only be
+	 * enabled at the beginning of a match, during the
 	 * {@link BWAPIEventListener#matchStart()} callback, or during the
-	 * {@link BWAPIEventListener#matchFrame()} callback on the first frame
-	 * (frame 0).
+	 * {@link BWAPIEventListener#matchFrame()} callback on the first frame (frame
+	 * 0).
 	 */
 	public native void enableUserInput();
 
 	/**
-	 * Enable complete map information so all units are accessible, not just
-	 * visible units. Note that this can only be enabled at the beginning of a
-	 * match, during the {@link BWAPIEventListener#matchStart()} callback, or
-	 * during the {@link BWAPIEventListener#matchFrame()} callback on the first
-	 * frame (frame 0).
+	 * Enable complete map information so all units are accessible, not just visible
+	 * units. Note that this can only be enabled at the beginning of a match, during
+	 * the {@link BWAPIEventListener#matchStart()} callback, or during the
+	 * {@link BWAPIEventListener#matchFrame()} callback on the first frame (frame
+	 * 0).
 	 */
 	public native void enablePerfectInformation();
 
@@ -839,8 +838,8 @@ public class JNIBWAPI {
 	/**
 	 * Convenience method to read each part of BWTA map data from a stream
 	 *
-	 * @return null when end of stream is reached, otherwise an int array
-	 *         (possibly empty)
+	 * @return null when end of stream is reached, otherwise an int array (possibly
+	 *         empty)
 	 */
 	private static int[] readMapData(BufferedReader reader) throws IOException {
 		int[] data = new int[0];
@@ -874,8 +873,8 @@ public class JNIBWAPI {
 	/**
 	 * C++ callback function.<br>
 	 *
-	 * Notifies the client and event listener that a connection has been formed
-	 * to the bridge.
+	 * Notifies the client and event listener that a connection has been formed to
+	 * the bridge.
 	 */
 	private void connected() {
 		try {
@@ -892,8 +891,8 @@ public class JNIBWAPI {
 	 * Notifies the client that a game has started. Not passed on to the event
 	 * listener.<br>
 	 *
-	 * Note: this is always called before the matchStarted event, and is meant
-	 * as a way of notifying the AI client to clear up state.
+	 * Note: this is always called before the matchStarted event, and is meant as a
+	 * way of notifying the AI client to clear up state.
 	 */
 	private void gameStarted() {
 		try {
@@ -974,8 +973,8 @@ public class JNIBWAPI {
 	 * Notifies the client that game data has been updated. Not passed on to the
 	 * event listener.<br>
 	 *
-	 * Note: this is always called before the events each frame, and is meant as
-	 * a way of notifying the AI client to update state.
+	 * Note: this is always called before the events each frame, and is meant as a
+	 * way of notifying the AI client to update state.
 	 */
 	private void gameUpdate() {
 		try {
@@ -1047,8 +1046,8 @@ public class JNIBWAPI {
 	 *
 	 * Notifies the event listener that the game has terminated.<br>
 	 *
-	 * Note: this is always called after the matchEnded event, and is meant as a
-	 * way of notifying the AI client to clear up state.
+	 * Note: this is always called after the matchEnded event, and is meant as a way
+	 * of notifying the AI client to clear up state.
 	 */
 	private void gameEnded() {
 	}
